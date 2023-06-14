@@ -41,6 +41,7 @@ class Ui_Form(object):
         self.pushButton.clicked.connect(self.proxy)
         self.pushButton.clicked.connect(Form.close)
         self.proxy_load()
+        Form.setWindowIcon(QtGui.QIcon("icon.ico"))
 
         self.retranslateUi(Form)
         QtCore.QMetaObject.connectSlotsByName(Form)

@@ -57,6 +57,7 @@ class Ui_MainWindow(object):
         self.menuAPI_Key = QtWidgets.QMenu(self.menubar)
         self.menuAPI_Key.setObjectName("menuAPI_Key")
         MainWindow.setMenuBar(self.menubar)
+        MainWindow.setWindowIcon(QtGui.QIcon("icon.ico"))
 
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
         self.statusbar.setObjectName("statusbar")
@@ -81,6 +82,7 @@ class Ui_MainWindow(object):
         self.actionproxy.triggered.connect(self.window_proxy)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
         self.textEdit.keyPressEvent = self.on_key_press
+
 
     def on_key_press(self, event):
         if event.key() == Qt.Key_Return:
