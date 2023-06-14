@@ -12,6 +12,7 @@ from PyQt5 import QtCore, QtWidgets
 
 from database.db import key_add
 
+
 class Ui_Form(object):
     def setupUi(self, Form):
         Form.setObjectName("Form")
@@ -38,11 +39,11 @@ class Ui_Form(object):
         QtCore.QMetaObject.connectSlotsByName(Form)
         self.pushButton.clicked.connect(Form.close)
 
-
     def retranslateUi(self, Form):
         _translate = QtCore.QCoreApplication.translate
         Form.setWindowTitle(_translate("Form", "添加API Key"))
-        self.label.setText(_translate("Form", "<html><head/><body><p><span style=\" font-size:10pt; font-weight:600;\">添加API Key</span></p></body></html>"))
+        self.label.setText(_translate("Form",
+                                      "<html><head/><body><p><span style=\" font-size:10pt; font-weight:600;\">添加API Key</span></p></body></html>"))
         self.pushButton.setText(_translate("Form", "确定"))
 
     def add(self):

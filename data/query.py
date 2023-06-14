@@ -1,18 +1,22 @@
 import datetime
 import requests
 import time
-
-proxies = {
-    'http': 'http://127.0.0.1:10809',
-    'https': 'http://127.0.0.1:10809'
-}
+from database.db import proxy_read
 
 
 def get_key(apikey):
-    '''查询余量'''
+    """查询余量"""
 
     error = 0
     status = True
+
+    ip = proxy_read()
+    ip = ip[0]
+
+    proxies = {
+        'http': ip,
+        'https': ip
+    }
 
     subscription_url = "https://api.openai.com/v1/dashboard/billing/subscription"
 
@@ -20,16 +24,16 @@ def get_key(apikey):
         "Authorization": "Bearer " + apikey,
         "Content-Type": "application/json",
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36'
-        }
+    }
 
     # 主请求段1
-    while status == True:
+    while status:
         try:
             subscription_response = requests.get(subscription_url, headers=headers, proxies=proxies)
             status = False  # 判断成功退出循环
         except:
-            error+=1    # 添加失误次数
-            time.sleep(1)   # 暂停1秒
+            error += 1  # 添加失误次数
+            time.sleep(1)  # 暂停1秒
             if error > 5:
                 status = False
 
@@ -47,42 +51,44 @@ def get_key(apikey):
 
     # 主请求段2
     status = True
-    while status == True:
+    while status:
         try:
             billing_response = requests.get(billing_url, headers=headers, proxies=proxies)
             status = False  # 判断成功退出循环
         except:
-            error+=1    # 添加失误次数
-            time.sleep(1)   # 暂停1秒
+            error += 1  # 添加失误次数
+            time.sleep(1)  # 暂停1秒
 
     if billing_response.status_code == 200:
         data = billing_response.json()
-        total_usage = data.get("total_usage") / 100     # 当前使用量
-        daily_costs = data.get("daily_costs")   # 剩余
+        total_usage = data.get("total_usage") / 100  # 当前使用量
     else:
         pass
-    output = []
-    output.append(total)
-    output.append(total_usage)
+    output = [total, total_usage]
 
     return output
 
 
-
-def get_dayly(day, apikey):
-    '''查询使用情况'''
+def get_daily(day, apikey):
+    """查询使用情况"""
 
     error = 0
     status = True
 
-    subscription_url = "https://api.openai.com/v1/dashboard/billing/subscription"
+    ip = proxy_read()
+    ip = ip[0]
+
+    proxies = {
+        'http': ip,
+        'https': ip
+    }
 
     # 请求头
     headers = {
         "Authorization": "Bearer " + apikey,
         "Content-Type": "application/json",
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36'
-        }
+    }
 
     # 设置起始时间和终止时间
     start_date = (datetime.datetime.now() - datetime.timedelta(days=day)).strftime("%Y-%m-%d")
@@ -91,18 +97,18 @@ def get_dayly(day, apikey):
     billing_url = f"https://api.openai.com/v1/dashboard/billing/usage?start_date={start_date}&end_date={end_date}"
 
     # 主请求
-    while status == True:
+    while status:
         try:
             billing_response = requests.get(billing_url, headers=headers, proxies=proxies)
-            status = False # 判断成功退出循环
+            status = False  # 判断成功退出循环
         except:
-            error+=1 # 添加失误次数
-            time.sleep(1) # 暂停1秒
+            error += 1  # 添加失误次数
+            time.sleep(1)  # 暂停1秒
 
     if billing_response.status_code == 200:
         data = billing_response.json()
         daily_costs = data.get("daily_costs")
-        days = min(day, len(daily_costs))   # 需要查询的天数
+        days = min(day, len(daily_costs))  # 需要查询的天数
 
         recent = f"最近{days}天使用情况  \n"
 

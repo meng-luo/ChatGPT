@@ -14,7 +14,20 @@ if not exist:
         total FLOAT default 0,
         used FLOAT default  0,
         rest FLOAT default 0);''')
+    db.commit()
     print('创建表成功')
 
-db.commit()
+exist_proxy = cursor.execute('SELECT name FROM sqlite_master WHERE type="table" AND name = "proxy";').fetchone()
+
+if not exist_proxy:
+    cursor.execute('''create table proxy (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        ip varchar not null);
+        ''')
+    db.commit()
+    print('创建表成功')
+    cursor.execute("insert into proxy(ip) values ('NONE')")
+    db.commit()
+    print("初始化成功")
+
 db.close()

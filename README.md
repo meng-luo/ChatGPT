@@ -3,9 +3,9 @@
 
 ### 使用
 #### 准备
-要求使用`python3`
+要求使用 `python3`
 
-需要准备任意可使用的`API key`
+需要准备任意可使用的 `API key`
 #### 安装依赖
 ```shell
 pip install -r requirements.txt
@@ -17,8 +17,7 @@ python3 main.py
 ```
 
 #### 代理
-默认使用的代理地址为`http://127.0.0.1:10809`
-如不同情自行修改
+国内无法访问，请自行在 `设置 - 代理设置` 中设置代理
 
 
 ### 预览
@@ -28,7 +27,7 @@ python3 main.py
 ![](https://raw.githubusercontent.com/meng-luo/ChatGPT/master/docs/Snipaste_2023-06-13_23-06-06.png)
 
 ### ToDo
-- [ ] 直接通过窗口修改代理
+- [x] 直接通过窗口修改代理
 - [ ] API 历史扣费
 - [ ] 更多的线程加快运行效率
 - [ ] 更好的交互
