@@ -9,7 +9,9 @@
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtWidgets import QMessageBox
 from add_key import Ui_Form as Ui_Form_add
+from cost import  Ui_Form as Ui_Form_cost
 from database.db import data_get, key_delete, data_update
 from data.query import get_key
 import threading
@@ -70,6 +72,7 @@ class Ui_Form(object):
         self.pushButton_2.clicked.connect(Form.close)
         self.pushButton_3.clicked.connect(self.data_delete)
         self.pushButton_4.clicked.connect(self.data_update)
+        self.pushButton_5.clicked.connect(self.cost_window)
 
         self.retranslateUi(Form)
         QtCore.QMetaObject.connectSlotsByName(Form)
@@ -100,6 +103,12 @@ class Ui_Form(object):
         self.ui4.setupUi(self.form4)
         self.form4.show()
 
+    def cost_window(self):
+        self.form5 = QtWidgets.QWidget()
+        self.ui5 = Ui_Form_cost()
+        self.ui5.setupUi(self.form5)
+        self.form5.show()
+
     def data_run(self):
         data = data_get()
         number = 0
@@ -120,14 +129,17 @@ class Ui_Form(object):
             number += 1
 
     def data_delete(self):
-        selected_row = self.tableWidget.currentRow()
-        item = self.tableWidget.item(selected_row, 0)
-        if item is not None:
-            data = item.text()
-        key_delete(data)
-        self.tableWidget.clearContents()
-        self.tableWidget.setRowCount(data_num())
-        self.data_run()
+        try:
+            selected_row = self.tableWidget.currentRow()
+            item = self.tableWidget.item(selected_row, 0)
+            if item is not None:
+                data = item.text()
+            key_delete(data)
+            self.tableWidget.clearContents()
+            self.tableWidget.setRowCount(data_num())
+            self.data_run()
+        except:
+            QMessageBox.about(None, "提示", "请选择需要删除的数据")
 
     def data_update(self):
         def _slot1(tableWidget, data_run):
@@ -146,5 +158,4 @@ class Ui_Form(object):
             rest = total - usage
             data_update(total, usage, rest, data)
             data_run()
-
         threading.Thread(target=_slot1, args=(self.tableWidget, self.data_run)).start()
